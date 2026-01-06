@@ -3,24 +3,31 @@ import React, { useState } from 'react';
 import { Search, UserPlus, Phone, Mail, MapPin, MoreHorizontal, X, Plus } from 'lucide-react';
 import { Client } from '../types';
 
-const INITIAL_CLIENTS: Client[] = [
-  { id: '1', name: 'Ishara Jay', company: 'Vibe Club', email: 'ishara@vibe.lk', phone: '+94 77 123 4567', category: 'Venue' },
-  { id: '2', name: 'John Smith', company: 'Warehouse Project', email: 'john@whp.uk', phone: '+44 20 7123 4567', category: 'Promoter' },
-  { id: '3', name: 'Marina Diaz', company: 'Ibiza Global', email: 'marina@ibiza.es', phone: '+34 971 123 456', category: 'Agency' },
-];
+interface ClientDirectoryProps {
+  clients?: Client[];
+  onAddClient?: (client: Omit<Client, 'id'>) => void;
+}
 
-const ClientDirectory: React.FC = () => {
-  const [clients, setClients] = useState<Client[]>(INITIAL_CLIENTS);
+const ClientDirectory: React.FC<ClientDirectoryProps> = ({ clients = [], onAddClient }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', category: 'Venue' });
 
-  const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+  const filteredClients = clients.filter(c =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.company.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleSubmit = () => {
+    if (newClient.name && newClient.email && onAddClient) {
+      onAddClient(newClient as any);
+      setIsModalOpen(false);
+      setNewClient({ name: '', company: '', email: '', phone: '', category: 'Venue' });
+    }
+  };
+
   return (
-    <div className="space-y-6 animate-in slide-in-from-bottom-4">
+    <div className="space-y-6 animate-in slide-in-from-bottom-4 pb-20">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-white mb-1">Client Directory</h2>
@@ -69,15 +76,15 @@ const ClientDirectory: React.FC = () => {
               <button onClick={() => setIsModalOpen(false)}><X className="w-6 h-6 text-zinc-500" /></button>
             </div>
             <div className="space-y-4">
-              <input type="text" placeholder="Full Name" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
-              <input type="text" placeholder="Company / Venue" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
-              <input type="email" placeholder="Email Address" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
-              <input type="tel" placeholder="Phone Number" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
-              <select className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-400 outline-none">
-                <option>Venue</option><option>Promoter</option><option>Corporate</option><option>Agency</option>
+              <input required value={newClient.name} onChange={e => setNewClient({ ...newClient, name: e.target.value })} type="text" placeholder="Full Name" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
+              <input required value={newClient.company} onChange={e => setNewClient({ ...newClient, company: e.target.value })} type="text" placeholder="Company / Venue" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
+              <input required value={newClient.email} onChange={e => setNewClient({ ...newClient, email: e.target.value })} type="email" placeholder="Email Address" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
+              <input value={newClient.phone} onChange={e => setNewClient({ ...newClient, phone: e.target.value })} type="tel" placeholder="Phone Number" className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white outline-none" />
+              <select value={newClient.category} onChange={e => setNewClient({ ...newClient, category: e.target.value })} className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-zinc-400 outline-none">
+                <option value="Venue">Venue</option><option value="Promoter">Promoter</option><option value="Corporate">Corporate</option><option value="Agency">Agency</option>
               </select>
             </div>
-            <button onClick={() => setIsModalOpen(false)} className="w-full py-5 bg-purple-600 text-white rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">SAVE CLIENT</button>
+            <button onClick={handleSubmit} className="w-full py-5 bg-purple-600 text-white rounded-[1.5rem] font-bold shadow-xl active:scale-95 transition-all">SAVE CLIENT</button>
           </div>
         </div>
       )}

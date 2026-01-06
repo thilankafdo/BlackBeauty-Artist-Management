@@ -1,20 +1,20 @@
 
 import React, { useState } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
   Cell
 } from 'recharts';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  DollarSign, 
-  Plus, 
+import {
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Plus,
   X,
   Briefcase,
   Zap,
@@ -42,7 +42,12 @@ const Financials: React.FC<FinancialsProps> = ({ gigs, expenses, documents, onAd
   const [cat, setCat] = useState<Expense['category']>('Travel');
   const [gigId, setGigId] = useState('');
 
-  const totalRevenue = gigs.filter(g => g.status === 'Confirmed').reduce((sum, g) => sum + g.fee, 0);
+  const totalRevenue = gigs.filter(g => g.status === 'Confirmed').reduce((sum, g) => {
+    let revenue = 0;
+    if (g.isDepositPaid) revenue += (g.deposit || 0);
+    if (g.isFeePaid) revenue += (g.fee - (g.deposit || 0));
+    return sum + revenue;
+  }, 0);
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
   const netProfit = totalRevenue - totalExpenses;
 
@@ -66,7 +71,7 @@ const Financials: React.FC<FinancialsProps> = ({ gigs, expenses, documents, onAd
   };
 
   const getIcon = (c: string) => {
-    switch(c) {
+    switch (c) {
       case 'Travel': return <Plane className="w-4 h-4 text-sky-400" />;
       case 'Gear': return <Speaker className="w-4 h-4 text-purple-400" />;
       case 'Staff': return <Briefcase className="w-4 h-4 text-emerald-400" />;
@@ -119,7 +124,7 @@ const Financials: React.FC<FinancialsProps> = ({ gigs, expenses, documents, onAd
               <ResponsiveContainer width="100%" height="80%">
                 <BarChart data={chartData}>
                   <XAxis dataKey="name" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
-                  <Tooltip cursor={{fill: 'transparent'}} contentStyle={{backgroundColor: '#0c0c0c', border: '1px solid #27272a', borderRadius: '1rem'}} />
+                  <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#0c0c0c', border: '1px solid #27272a', borderRadius: '1rem' }} />
                   <Bar dataKey="val" radius={[12, 12, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -172,14 +177,28 @@ const Financials: React.FC<FinancialsProps> = ({ gigs, expenses, documents, onAd
             </thead>
             <tbody className="divide-y divide-zinc-900 font-medium">
               {gigs.filter(g => g.status === 'Confirmed').map(g => (
-                <tr key={g.id} className="hover:bg-emerald-500/5 transition-all">
-                  <td className="px-10 py-6">
-                    <p className="text-xs font-black text-white uppercase">Gig: {g.venue}</p>
-                    <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Performance Income</p>
-                  </td>
-                  <td className="px-10 py-6 text-xs">{g.date}</td>
-                  <td className="px-10 py-6 text-right text-emerald-400 font-black font-syncopate">+ {g.fee.toLocaleString()}</td>
-                </tr>
+                <React.Fragment key={g.id}>
+                  {g.isDepositPaid && (g.deposit || 0) > 0 && (
+                    <tr className="hover:bg-emerald-500/5 transition-all">
+                      <td className="px-10 py-6">
+                        <p className="text-xs font-black text-white uppercase">Gig: {g.venue}</p>
+                        <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Performance Deposit</p>
+                      </td>
+                      <td className="px-10 py-6 text-xs">{g.date}</td>
+                      <td className="px-10 py-6 text-right text-emerald-400 font-black font-syncopate">+ {g.deposit?.toLocaleString()}</td>
+                    </tr>
+                  )}
+                  {g.isFeePaid && (g.fee - (g.deposit || 0)) > 0 && (
+                    <tr className="hover:bg-emerald-500/5 transition-all">
+                      <td className="px-10 py-6">
+                        <p className="text-xs font-black text-white uppercase">Gig: {g.venue}</p>
+                        <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Performance Settlement</p>
+                      </td>
+                      <td className="px-10 py-6 text-xs">{g.date}</td>
+                      <td className="px-10 py-6 text-right text-emerald-400 font-black font-syncopate">+ {(g.fee - (g.deposit || 0)).toLocaleString()}</td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
               {expenses.map(e => (
                 <tr key={e.id} className="hover:bg-red-500/5 transition-all">

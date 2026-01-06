@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import { 
-  Plus, 
-  Trash2, 
-  ImageIcon, 
-  Music, 
-  Video, 
-  FileText, 
+import {
+  Plus,
+  Trash2,
+  ImageIcon,
+  Music,
+  Video,
+  FileText,
   ExternalLink,
   Save,
   Wand2
@@ -14,10 +14,10 @@ import {
 import { geminiService } from '../services/geminiService';
 
 const ARTIST_PHOTOS = [
-  "https://images.unsplash.com/photo-1598387181032-a3103a2db5b3?q=80&w=1000&auto=format&fit=crop", // Main black dress
-  "https://images.unsplash.com/photo-1598387946413-0975877f2402?q=80&w=1000&auto=format&fit=crop", // Headphones
-  "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?q=80&w=1000&auto=format&fit=crop", // Blue sheer dress close
-  "https://images.unsplash.com/photo-1598387103328-89c0b795267b?q=80&w=1000&auto=format&fit=crop", // Blue sheer dress full
+  "/assets/images/img-1.png", // Main black dress
+  "/assets/images/img-5.png", // Headphones
+  "/assets/images/img-3.jpg", // Blue sheer dress close
+  "/assets/images/img-2.png", // Blue sheer dress full
 ];
 
 const EPKBuilder: React.FC = () => {
@@ -54,7 +54,7 @@ const EPKBuilder: React.FC = () => {
               <FileText className="w-5 h-5 text-purple-500" />
               Artist Biography
             </h3>
-            <button 
+            <button
               onClick={() => handleGenerateBio()}
               disabled={isGenerating}
               className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2 px-4 py-2 bg-purple-600/10 text-purple-400 rounded-xl hover:bg-purple-600/20 transition-colors disabled:opacity-50 border border-purple-600/20"
@@ -63,11 +63,11 @@ const EPKBuilder: React.FC = () => {
               {isGenerating ? 'Drafting...' : 'AI Synchronize'}
             </button>
           </div>
-          
+
           <div className="space-y-2">
             <p className="text-[9px] text-zinc-600 uppercase tracking-widest font-black">AI Contextual Guidance</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="E.g. Sri Lankan heritage, dark techno vibes, EDC 2024 highlight..."
               className="w-full bg-black border border-zinc-800 rounded-2xl p-4 text-xs focus:ring-1 focus:ring-purple-500 outline-none text-zinc-300 shadow-inner"
               value={bioPrompt}
@@ -75,7 +75,7 @@ const EPKBuilder: React.FC = () => {
             />
           </div>
 
-          <textarea 
+          <textarea
             className="w-full h-48 bg-black border border-zinc-800 rounded-2xl p-5 text-sm text-zinc-400 focus:ring-1 focus:ring-purple-500 outline-none resize-none shadow-inner leading-relaxed"
             placeholder="Artist biography content..."
             value={bio}
@@ -160,8 +160,8 @@ const EPKBuilder: React.FC = () => {
 
         <div className="p-10 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-             <div className="w-2 h-2 rounded-full bg-green-500"></div>
-             <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">LIVE MASTER PREVIEW</span>
+            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">LIVE MASTER PREVIEW</span>
           </div>
           <button className="bg-black text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 hover:bg-zinc-800 transition-all active:scale-95 shadow-2xl">
             <Save className="w-4 h-4" /> LOCK & DEPLOY EPK
