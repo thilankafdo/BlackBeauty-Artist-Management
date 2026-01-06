@@ -35,6 +35,9 @@ export interface JobDocument {
   totalAmount?: number;
   quoteItems?: QuoteItem[];
   includeArtistFee?: boolean;
+  googleDriveUrl?: string;
+  clientName?: string;
+  venueName?: string;
 }
 
 export interface Gig {
@@ -49,6 +52,10 @@ export interface Gig {
   currency: string;
   notes?: string;
   clientId?: string;
+  deposit?: number;
+  isDepositPaid?: boolean;
+  isFeePaid?: boolean;
+  googleCalendarEventId?: string;
 }
 
 export interface Expense {
@@ -81,4 +88,4 @@ export interface UserAccount {
   lastActive: string;
 }
 
-export type ViewState = 'dashboard' | 'gigs' | 'finance' | 'epk' | 'access' | 'clients' | 'registry' | 'quotation' | 'journal';
+export type ViewState = 'dashboard' | 'gigs' | 'finance' | 'epk' | 'access' | 'clients' | 'registry' | 'quotation' | 'journal' | 'knowledge';

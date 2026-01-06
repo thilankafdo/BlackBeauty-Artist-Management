@@ -1,20 +1,21 @@
 
-import React, { useState } from 'react';
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  DollarSign, 
-  FileText, 
-  Sparkles, 
-  Menu, 
-  X, 
-  Bell, 
+import React, { useState, useEffect } from 'react';
+import {
+  LayoutDashboard,
+  Calendar,
+  DollarSign,
+  FileText,
+  Sparkles,
+  Menu,
+  X,
+  Bell,
   Users,
   Archive,
   Settings,
   LogOut,
   Receipt,
-  BookOpen
+  BookOpen,
+  PenLine
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import GigsManager from './components/GigsManager';
@@ -26,29 +27,32 @@ import ClientDirectory from './components/ClientDirectory';
 import JobRegistry from './components/JobRegistry';
 import QuotationBuilder from './components/QuotationBuilder';
 import JournalManager from './components/JournalManager';
+import KnowledgeBase from './components/KnowledgeBase';
 import Auth from './components/Auth';
 import { ViewState, Gig, AuthRole, JobDocument, Client, Expense } from './types';
-
-const INITIAL_GIGS: Gig[] = [
-  { id: '1', venue: 'Vibe Club', city: 'Colombo', date: '2025-05-18', startTime: '22:00', endTime: '02:00', status: 'Confirmed', fee: 150000, currency: 'LKR', notes: 'Main Stage Techno Set', clientId: '1' },
-  { id: '2', venue: 'Warehouse Project', city: 'Manchester', date: '2025-06-02', startTime: '02:00', endTime: '04:00', status: 'Confirmed', fee: 18000, currency: 'GBP', clientId: '2' },
-];
-
-const INITIAL_EXPENSES: Expense[] = [
-  { id: 'e1', date: '2025-05-15', category: 'Travel', description: 'Manchester Flight', amount: 850, currency: 'GBP', gigId: '2' },
-  { id: 'e2', date: '2025-05-18', category: 'Gear', description: 'Monitor Rental', amount: 15000, currency: 'LKR', gigId: '1' },
-];
+import { api } from './services/api';
 
 const App: React.FC = () => {
   const [activeView, setActiveView] = useState<ViewState>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [gigs, setGigs] = useState<Gig[]>(INITIAL_GIGS);
-  const [expenses, setExpenses] = useState<Expense[]>(INITIAL_EXPENSES);
+  const [gigs, setGigs] = useState<Gig[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [jobRegistry, setJobRegistry] = useState<JobDocument[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
   const [authRole, setAuthRole] = useState<AuthRole | null>(null);
   const [editingDocId, setEditingDocId] = useState<string | null>(null);
-  const [loginBg, setLoginBg] = useState("https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?q=80&w=2000&auto=format&fit=crop");
+  const [loginBg, setLoginBg] = useState("/assets/images/img-3.jpg");
+  const [hubHero, setHubHero] = useState("/assets/images/img-2.png");
+  const [hubHeroScale, setHubHeroScale] = useState(1);
+
+  useEffect(() => {
+    if (authRole) {
+      api.getGigs().then(setGigs).catch(console.error);
+      api.getExpenses().then(setExpenses).catch(console.error);
+      api.getClients().then(setClients).catch(console.error);
+    }
+  }, [authRole]);
 
   const navigation = [
     { id: 'dashboard', name: 'Hub', icon: LayoutDashboard },
@@ -57,16 +61,44 @@ const App: React.FC = () => {
     { id: 'quotation', name: 'Quotes', icon: Receipt },
     { id: 'registry', name: 'Vault', icon: Archive },
     { id: 'clients', name: 'Clients', icon: Users },
-    { id: 'journal', name: 'Journal', icon: BookOpen },
+    { id: 'journal', name: 'Journal', icon: PenLine },
     { id: 'epk', name: 'EPK', icon: FileText },
   ];
 
-  const handleAddGig = (newGig: Omit<Gig, 'id'>) => {
-    setGigs(prev => [{ ...newGig, id: Math.random().toString(36).substr(2, 9) }, ...prev]);
+  const handleAddGig = async (newGig: Omit<Gig, 'id'>) => {
+    try {
+      const addedGig = await api.addGig(newGig);
+      setGigs(prev => [addedGig, ...prev]);
+    } catch (error) {
+      console.error("Failed to add gig", error);
+    }
   };
 
-  const handleAddExpense = (exp: Omit<Expense, 'id'>) => {
-    setExpenses(prev => [{ ...exp, id: Math.random().toString(36).substr(2, 9) }, ...prev]);
+  const handleAddClient = async (client: Omit<Client, 'id'>) => {
+    try {
+      const addedClient = await api.addClient(client);
+      setClients(prev => [addedClient, ...prev]);
+    } catch (error) {
+      console.error("Failed to add client", error);
+    }
+  };
+
+  const handleAddExpense = async (exp: Omit<Expense, 'id'>) => {
+    try {
+      const addedExpense = await api.addExpense(exp);
+      setExpenses(prev => [addedExpense, ...prev]);
+    } catch (error) {
+      console.error("Failed to add expense", error);
+    }
+  };
+
+  const handleUpdateGig = async (id: string, updates: Partial<Gig>) => {
+    try {
+      const updatedGig = await api.updateGig(id, updates);
+      setGigs(prev => prev.map(g => g.id === id ? updatedGig : g));
+    } catch (error) {
+      console.error("Failed to update gig", error);
+    }
   };
 
   const handleSaveDoc = (doc: JobDocument) => {
@@ -85,16 +117,17 @@ const App: React.FC = () => {
 
   const renderView = () => {
     switch (activeView) {
-      case 'dashboard': return <Dashboard onNavigate={setActiveView} role={authRole!} gigs={gigs} />;
-      case 'gigs': return <GigsManager gigs={gigs} documents={jobRegistry} clients={[]} onAddGig={handleAddGig} onSaveDocument={handleSaveDoc} />;
+      case 'dashboard': return <Dashboard onNavigate={setActiveView} role={authRole!} gigs={gigs} heroImage={hubHero} heroScale={hubHeroScale} />;
+      case 'gigs': return <GigsManager gigs={gigs} documents={jobRegistry} clients={clients} onAddGig={handleAddGig} onUpdateGig={handleUpdateGig} onSaveDocument={handleSaveDoc} />;
       case 'finance': return <Financials gigs={gigs} expenses={expenses} documents={jobRegistry} onAddExpense={handleAddExpense} />;
-      case 'quotation': return <QuotationBuilder gigs={gigs} clients={[]} onSaveDocument={handleSaveDoc} initialDoc={jobRegistry.find(d => d.id === editingDocId)} onCancel={() => setActiveView('registry')} />;
+      case 'quotation': return <QuotationBuilder gigs={gigs} clients={clients} onSaveDocument={handleSaveDoc} initialDoc={jobRegistry.find(d => d.id === editingDocId)} onCancel={() => setActiveView('registry')} />;
       case 'registry': return <JobRegistry documents={jobRegistry} gigs={gigs} onEditDocument={handleEditDoc} />;
-      case 'clients': return <ClientDirectory />;
+      case 'clients': return <ClientDirectory clients={clients} onAddClient={handleAddClient} />;
       case 'journal': return <JournalManager gigs={gigs} />;
       case 'epk': return <EPKBuilder />;
-      case 'access': return <AccessManager loginBg={loginBg} onUpdateLoginBg={setLoginBg} />;
-      default: return <Dashboard onNavigate={setActiveView} role={authRole!} gigs={gigs} />;
+      case 'access': return <AccessManager loginBg={loginBg} onUpdateLoginBg={setLoginBg} hubHero={hubHero} onUpdateHubHero={setHubHero} hubHeroScale={hubHeroScale} onUpdateHubHeroScale={setHubHeroScale} />;
+      case 'knowledge': return <KnowledgeBase />;
+      default: return <Dashboard onNavigate={setActiveView} role={authRole!} gigs={gigs} heroImage={hubHero} heroScale={hubHeroScale} />;
     }
   };
 
@@ -116,8 +149,15 @@ const App: React.FC = () => {
           ))}
         </nav>
         <div className="p-4 border-t border-zinc-900 space-y-2">
-           <button onClick={() => setActiveView('access')} className="w-full flex items-center gap-4 p-4 rounded-2xl text-zinc-500 hover:text-white"><Settings className="w-5 h-5" /> {isSidebarOpen && 'System'}</button>
-           <button onClick={() => setAuthRole(null)} className="w-full flex items-center gap-4 p-4 rounded-2xl text-zinc-500 hover:text-red-400"><LogOut className="w-5 h-5" /> {isSidebarOpen && 'Exit'}</button>
+          <button onClick={() => setActiveView('knowledge')} className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all ${activeView === 'knowledge' ? 'bg-purple-600/10 text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <BookOpen className="w-5 h-5" /> {isSidebarOpen && <span className="text-[10px] font-black uppercase tracking-widest">Manual</span>}
+          </button>
+          <button onClick={() => setActiveView('access')} className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all ${activeView === 'access' ? 'bg-purple-600/10 text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <Settings className="w-5 h-5" /> {isSidebarOpen && <span className="text-[10px] font-black uppercase tracking-widest">System</span>}
+          </button>
+          <button onClick={() => setAuthRole(null)} className="w-full flex items-center gap-4 p-4 rounded-2xl text-zinc-500 hover:text-red-400 transition-all">
+            <LogOut className="w-5 h-5" /> {isSidebarOpen && <span className="text-[10px] font-black uppercase tracking-widest">Exit</span>}
+          </button>
         </div>
       </aside>
 
@@ -127,7 +167,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-6">
             <button className="p-2 text-zinc-500 hover:text-white transition-all"><Bell className="w-5 h-5" /></button>
             <div className="w-10 h-10 rounded-2xl bg-zinc-800 border border-zinc-700 overflow-hidden">
-               <img src="https://images.unsplash.com/photo-1598387946413-0975877f2402?q=80&w=100&h=100&auto=format&fit=crop" className="w-full h-full object-cover" alt="User" />
+              <img src="/assets/images/img-4.png" className="w-full h-full object-cover" alt="User" />
             </div>
           </div>
         </header>
