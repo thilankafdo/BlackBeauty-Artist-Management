@@ -1,0 +1,240 @@
+{
+  "gigs": [
+    {
+      "id": "1",
+      "venue": "Vibe Club",
+      "city": "Colombo",
+      "date": "2026-01-15",
+      "startTime": "22:00",
+      "endTime": "02:00",
+      "status": "Confirmed",
+      "fee": 150000,
+      "deposit": 50000,
+      "isDepositPaid": true,
+      "isFeePaid": false,
+      "currency": "LKR",
+      "notes": "Main Stage Techno Set. Rider confirmed.",
+      "clientId": "1"
+    },
+    {
+      "id": "2",
+      "venue": "Warehouse Project",
+      "city": "Manchester",
+      "date": "2025-06-02",
+      "startTime": "02:00",
+      "endTime": "04:00",
+      "status": "Confirmed",
+      "fee": 18000,
+      "deposit": 9000,
+      "isDepositPaid": true,
+      "isFeePaid": true,
+      "currency": "GBP",
+      "notes": "Closing set. Flight BA255.",
+      "clientId": "2"
+    },
+    {
+      "id": "3",
+      "venue": "Electric Gardens",
+      "city": "Melbourne",
+      "date": "2026-01-16",
+      "startTime": "16:00",
+      "endTime": "18:00",
+      "status": "Pending",
+      "fee": 4500,
+      "deposit": 0,
+      "isDepositPaid": false,
+      "isFeePaid": false,
+      "currency": "USD",
+      "notes": "Festival slot. Contract negotiation pending.",
+      "clientId": "3"
+    },
+    {
+      "id": "4",
+      "venue": "Fabric",
+      "city": "London",
+      "date": "2025-06-05",
+      "startTime": "23:00",
+      "endTime": "01:00",
+      "status": "Canceled",
+      "fee": 2000,
+      "deposit": 0,
+      "isDepositPaid": false,
+      "isFeePaid": false,
+      "currency": "GBP",
+      "notes": "Promoter canceled due to licensing issues.",
+      "clientId": "4"
+    },
+    {
+      "id": "5",
+      "venue": "ZOUK",
+      "city": "Singapore",
+      "date": "2025-07-20",
+      "startTime": "01:00",
+      "endTime": "03:00",
+      "status": "Confirmed",
+      "fee": 8000,
+      "deposit": 4000,
+      "isDepositPaid": true,
+      "isFeePaid": false,
+      "currency": "USD",
+      "notes": "Asia Tour Leg 1.",
+      "clientId": "5"
+    },
+    {
+      "id": "6",
+      "venue": "Kama Colombo",
+      "city": "Colombo",
+      "date": "2025-04-10",
+      "startTime": "21:00",
+      "endTime": "00:00",
+      "status": "Confirmed",
+      "fee": 85000,
+      "deposit": 85000,
+      "isDepositPaid": true,
+      "isFeePaid": true,
+      "currency": "LKR",
+      "notes": "Private Corporate Event.",
+      "clientId": "6"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "e1",
+      "date": "2025-05-15",
+      "category": "Travel",
+      "description": "Manchester Flight",
+      "amount": 850,
+      "currency": "GBP",
+      "gigId": "2"
+    },
+    {
+      "id": "e2",
+      "date": "2025-05-18",
+      "category": "Gear",
+      "description": "Monitor Rental",
+      "amount": 15000,
+      "currency": "LKR",
+      "gigId": "1"
+    },
+    {
+      "id": "e3",
+      "date": "2025-06-01",
+      "category": "Marketing",
+      "description": "UK Tour Ads",
+      "amount": 500,
+      "currency": "GBP",
+      "gigId": "2"
+    },
+    {
+      "id": "e4",
+      "date": "2025-04-05",
+      "category": "Staff",
+      "description": "Tour Manager Advance",
+      "amount": 50000,
+      "currency": "LKR",
+      "gigId": "6"
+    },
+    {
+      "id": "e5",
+      "date": "2025-06-14",
+      "category": "Travel",
+      "description": "Uber to Airport",
+      "amount": 45,
+      "currency": "USD",
+      "gigId": "3"
+    }
+  ],
+  "jobRegistry": [
+    {
+      "id": "d1",
+      "gigId": "1",
+      "type": "Contract",
+      "dateGenerated": "2025-04-20",
+      "status": "Approved",
+      "fileName": "Vibe_Club_Contract_Signed.pdf"
+    },
+    {
+      "id": "d2",
+      "gigId": "1",
+      "type": "Rider",
+      "dateGenerated": "2025-04-22",
+      "status": "Sent",
+      "fileName": "Black_Beauty_Tech_Rider_v2.pdf"
+    },
+    {
+      "id": "d3",
+      "gigId": "2",
+      "type": "Invoice",
+      "dateGenerated": "2025-05-01",
+      "status": "Paid",
+      "fileName": "INV-2025-001_Warehouse.pdf",
+      "totalAmount": 18000
+    },
+    {
+      "id": "d4",
+      "gigId": "3",
+      "type": "Quotation",
+      "dateGenerated": "2025-05-10",
+      "status": "Draft",
+      "fileName": "Quote_Electric_Gardens.pdf"
+    }
+  ],
+  "clients": [
+    {
+      "id": "1",
+      "name": "Roshan P.",
+      "company": "Vibe Ent",
+      "email": "roshan@vibe.lk",
+      "phone": "+94771234567",
+      "category": "Promoter"
+    },
+    {
+      "id": "2",
+      "name": "Sarah Jones",
+      "company": "MCR Warehouse",
+      "email": "sarah@warehouse.mcr",
+      "phone": "+447911123456",
+      "category": "Venue"
+    },
+    {
+      "id": "3",
+      "name": "Festival Team",
+      "company": "EG Australia",
+      "email": "bookings@electricgardens.au",
+      "phone": "+61412345678",
+      "category": "Promoter"
+    },
+    {
+      "id": "4",
+      "name": "London Events",
+      "company": "Fabric Live",
+      "email": "info@fabric.london",
+      "phone": "+442073368898",
+      "category": "Venue"
+    },
+    {
+      "id": "5",
+      "name": "Lim Wei",
+      "company": "Zouk Group",
+      "email": "wei@zouk.sg",
+      "phone": "+6567382988",
+      "category": "Venue"
+    },
+    {
+      "id": "6",
+      "name": "Tech Corp",
+      "company": "Virtusa",
+      "email": "events@virtusa.com",
+      "phone": "+94112345678",
+      "category": "Corporate"
+    },
+    {
+      "name": "Thilanka Fernando",
+      "company": "Mediawize",
+      "email": "thilanka@mediawize.lk",
+      "phone": "83147183143",
+      "category": "Agency",
+      "id": "a9jn9ok7j"
+    }
+  ]
+}
