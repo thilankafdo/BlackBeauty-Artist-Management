@@ -23,6 +23,7 @@ interface BookingData {
   fee: number;
   currency: string;
   notes?: string;
+  status: 'Confirmed' | 'Pending' | 'Canceled';
 }
 
 interface Message {
@@ -65,7 +66,11 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ onBookingCreated, onNavigate,
       if (response.functionCalls && response.functionCalls.length > 0) {
         for (const fc of response.functionCalls) {
           if (fc.name === 'create_booking') {
-            const booking = fc.args as any as BookingData;
+            const args = fc.args as any;
+            const booking: BookingData = {
+              ...args,
+              status: args.status || 'Pending'
+            };
             onBookingCreated(booking);
             
             setMessages(prev => [...prev, { 

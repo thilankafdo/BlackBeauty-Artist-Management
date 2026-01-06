@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { GoogleGenAI, Modality, LiveServerMessage } from '@google/genai';
-import { Mic, MicOff, X, Sparkles, Volume2, Waveform } from 'lucide-react';
+import { Mic, X, Sparkles } from 'lucide-react';
 import { Gig } from '../types';
 
 interface LiveBriefingProps {
@@ -12,7 +12,6 @@ interface LiveBriefingProps {
 const LiveBriefing: React.FC<LiveBriefingProps> = ({ onClose, gigs }) => {
   const [isActive, setIsActive] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [transcription, setTranscription] = useState('');
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const nextStartTimeRef = useRef<number>(0);
@@ -22,7 +21,7 @@ const LiveBriefing: React.FC<LiveBriefingProps> = ({ onClose, gigs }) => {
   const startBriefing = async () => {
     setIsConnecting(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
       
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       const inputContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
